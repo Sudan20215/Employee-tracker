@@ -72,3 +72,39 @@ function HomeView() {
         }
       });
   }  
+  function DetailTableView() {
+    con.query(
+      "SELECT e.id,e.first_name,e.last_name,r.title,d.name,r.salary from Employee AS e LEFT JOIN Roles as r ON e.role_id =r.id LEFT JOIN department as d ON r.department_id=d.id",
+      function (err, data) {
+        if (err) throw err;
+        console.log("\n");
+        console.table(data);
+        HomeView();
+      }
+    );
+  }
+  
+  function EmployeeByDepartment() {
+    con.query(
+      "SELECT d.id as value,d.name FROM department as d",
+      function (err, data) {
+        if (err) throw err;
+        console.log("\n");
+        inquirer
+          .prompt([
+            {
+              message: "Please choose department",
+              type: "list",
+              choices: data,
+              name: "department",
+            },
+          ])
+          .then(function (answer) {
+            var dept = answer.department;
+            EmployeByDepartment(dept);
+          })
+          .catch((e) => console.log(e));
+      }
+    );
+  }
+  
